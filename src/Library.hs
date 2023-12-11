@@ -28,6 +28,7 @@ ordenarSegun criterio (x:xs) =
  [x] ++
  (ordenarSegun criterio . filter (criterio x)) xs
 
+between :: Ord a => a -> a -> a -> Bool
 between cotaInferior cotaSuperior valor =
  valor <= cotaSuperior && valor >= cotaInferior
 
@@ -39,24 +40,32 @@ deptosDeEjemplo = [
 
 
 -- Punto 1
+mayor :: Ord a => (t -> a) -> t -> t -> Bool
+mayor funcion x y = funcion x > funcion y
 
 
-mayor f x y = f x > f y
+menor :: Ord a => (t -> a) -> t -> t -> Bool
+menor funcion x y = funcion x < funcion y
 
-
-menor f x y = f x < f y
-
-ejemploDeOrdenarSegun :: [Depto]
-ejemploDeOrdenarSegun = ordenarSegun (menor ambientes) deptosDeEjemplo
-
+type Lista = [String]
+lista = ["uno","quince","ocho"]
 
 -- Punto 2
 
 ubicadoEn :: [Barrio] -> (Depto -> Bool)
-ubicadoEn barrios depto = barrio depto `elem` barrios
+ubicadoEn barriosDeInteres departamento = elem (barrio departamento) barriosDeInteres
 
 ubicadoEn' :: [Barrio] -> Depto -> Bool
-ubicadoEn' barrios = (`elem` barrios).barrio
+ubicadoEn' barriosDeInteres departamento = flip elem barriosDeInteres. barrio $ departamento
 
 
+ubicadoEn'' :: [Barrio] -> Depto -> Bool
+ubicadoEn'' barriosDeInteres  = flip elem barriosDeInteres. barrio
+
+
+cumpleRango :: Ord a1 => (Depto -> a1) -> a1 -> a1 -> Depto -> Bool
+cumpleRango criterio valorInf valorSup departamento =  between valorInf valorSup. criterio $ departamento
+
+cumpleRango' :: Ord a1 => (a2 -> a1) -> a1 -> a1 -> a2 -> Bool
+cumpleRango' criterio valorInf valorSup  =  between valorInf valorSup. criterio
 
